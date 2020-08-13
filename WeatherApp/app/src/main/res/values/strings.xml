@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="default_weather_description">Very Sunny</string>
+    <string name="default_weather_temperature">16 C</string>
+    <string name="default_weather_location">Islamabad, Pakistan</string>
+    <string name="default_weather_date">Friday, Aug 16, 2020</string>
+    <string name="default_weather_icon_description">Weather icon displayed here</string>
+    <string name="pm_12">12 PM</string>
+    <string name="pm3">3 PM</string>
+    <string name="pm6">6 PM</string>
+    <string name="pm9">9 PM</string>
+    <string name="am12">12 AM</string>
+    <string name="pm12_temp">18 C</string>
+    <string name="pm3_temp">15 C</string>
+    <string name="pm6_temp">13 C</string>
+    <string name="pm9_temp">11 C</string>
+    <string name="am12_temp">08 C</string>
+</resources>

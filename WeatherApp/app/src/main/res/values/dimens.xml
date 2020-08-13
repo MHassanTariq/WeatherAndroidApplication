@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="cardview_margin">15sp</dimen>
+    <dimen name="cardview_padding">15sp</dimen>
+    <dimen name="default_textsize_description">20sp</dimen>
+    <dimen name="default_textsize_temperature">30sp</dimen>
+    <dimen name="today_icon_dimen">92dp</dimen>
+    <dimen name="cardview_elevation">16dp</dimen>
+    <dimen name="every_3hour_icon_dimen">30dp</dimen>
+</resources>
