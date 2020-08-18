@@ -7,4 +7,7 @@
     <dimen name="today_icon_dimen">92dp</dimen>
     <dimen name="cardview_elevation">16dp</dimen>
     <dimen name="every_3hour_icon_dimen">30dp</dimen>
+    <dimen name="weekly_weather_icon_dimen">79dp</dimen>
+    <dimen name="weekly_weather_info_margin">20dp</dimen>
+    <dimen name="weekly_day_name_text_size">30sp</dimen>
 </resources>

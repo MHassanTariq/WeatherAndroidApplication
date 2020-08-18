@@ -17,4 +17,7 @@
     <string name="pm6_temp">13 C</string>
     <string name="pm9_temp">11 C</string>
     <string name="am12_temp">08 C</string>
+    <string name="every_3hour_weather_description_not_found">Weather information could not be leaded</string>
+    <string name="day_name">Fri</string>
+    <string name="lowest_hight_temp">14 C / 17 C</string>
 </resources>
