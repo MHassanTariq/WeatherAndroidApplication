@@ -7,7 +7,7 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-@BindingAdapter("imageUrl")
+@BindingAdapter("displayImageFromInternet")
 fun bindImage(imgView: ImageView, imgUrl: String?) {
     var myobject = imgUrl?.let {
         val imgUri =

@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.weatherapp.Models.HomeModel
 import com.example.weatherapp.Models.HourlyWeatherInfo
 import com.example.weatherapp.Models.TodayWeatherInfo
@@ -113,6 +115,14 @@ class MainViewHolder private constructor(view: View) : RecyclerView.ViewHolder(v
             holder.myView.today_date_text.text = todayWeatherInfo.todayDate
             holder.myView.today_location_text.text = todayWeatherInfo.location
             holder.myView.today_temperature_text.text = todayWeatherInfo.temperature.toString()
+            val URL =
+                "https://is4-ssl.mzstatic.com/image/thumb/Purple123/v4/9a/c1/5d/9ac15dd5-0614-52b5-6fe8-19df1b6dfad6/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/246x0w.png"
+            Glide.with(holder.myView.today_icon.context).load(URL).apply(
+                RequestOptions()
+                    .placeholder(R.drawable.very_sunny)
+                    .error(R.drawable.error_img_loading)
+            )
+                .into(holder.myView.today_icon)
         }
 
     }

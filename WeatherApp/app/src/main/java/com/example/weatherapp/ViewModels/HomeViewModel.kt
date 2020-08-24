@@ -10,6 +10,8 @@ class HomeViewModel(
     context: Context
 ) : BaseViewModel() {
 
+    val imgUrl =
+        "https://images.pexels.com/photos/87611/sun-fireball-solar-flare-sunlight-87611.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=1&amp;w=500"
     private val dataSource: Repository = Repository(context)
     val todayWeatherInfo =
         Transformations.map(dataSource._homeModel) { todayWeatherLiveData ->

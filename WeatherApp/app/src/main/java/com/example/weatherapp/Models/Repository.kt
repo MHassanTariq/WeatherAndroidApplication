@@ -108,6 +108,7 @@ class Repository(context: Context) {
         Log.d("Repo", "Error: ${e.message}")
         todayWeatherInfo = getTodayInfoFromDB()
         hourlyWeatherInfo = getHourlyDataFromDB()
+        homeModel.value = HomeModel(todayWeatherInfo, hourlyWeatherInfo)
     }
 
     private suspend fun getApiAndPrepareTodayWeatherData() {
