@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/CardViewMainStyle"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/currentWeatherCardBG">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,6 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/default_weather_description"
+            android:textColor="@color/white"
             android:textSize="@dimen/default_textsize_description"
             app:layout_constraintBottom_toTopOf="@+id/today_temperature_text"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -27,6 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/default_weather_temperature"
+            android:textColor="@color/white"
             android:textSize="@dimen/default_textsize_temperature"
             app:layout_constraintBottom_toTopOf="@+id/today_location_text"
             app:layout_constraintEnd_toStartOf="@+id/today_icon"
@@ -39,6 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/default_weather_location"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toTopOf="@+id/today_date_text"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/today_icon"
@@ -49,6 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/default_weather_date"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/today_icon"

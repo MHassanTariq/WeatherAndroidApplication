@@ -13,5 +13,8 @@ class HourlyWeatherInfo(
     val time: String,
 
     @ColumnInfo(name = "weather_temperature")
-    val temperature: Double
+    val temperature: Double,
+
+    @ColumnInfo(name = "weather_icon")
+    val iconID: String
 )

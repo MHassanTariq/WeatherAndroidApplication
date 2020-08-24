@@ -2,6 +2,7 @@
 <resources>
     <color name="colorPrimary">#36BCFF</color>
     <color name="colorPrimaryDark">#263238</color>
+    <color name="currentWeatherCardBG">#FFD261</color>
     <color name="colorAccent">#2E7D32</color>
 
 </resources>

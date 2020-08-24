@@ -4,9 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.weatherapp.ForecastAPI
-import com.example.weatherapp.TodayAPI
-import com.example.weatherapp.WeatherApiSingleton
+import com.example.weatherapp.*
 import kotlinx.coroutines.*
 import retrofit2.Response
 import java.lang.Exception
@@ -14,26 +12,18 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class Repository(context: Context) {
-    //Constants
-    private val defaultWeatherDescription = "Couldn't load"
-    private val defaultWeatherTemperature: Int = -1
-    private val weatherApiKey = "52a6bcff1b67538be432738eecb8ba32"
-    private val cityName = "Lahore"
-    private val datePattern = "dd/M/yy"
-
-
     //Coroutine
     private var repoJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + repoJob)
 
     //LiveData
-    private var homeModel =  MutableLiveData<HomeModel>()
+    private var homeModel = MutableLiveData<HomeModel>()
     val _homeModel: LiveData<HomeModel>
         get() = homeModel
 
     //Data
-    private var todayWeatherInfo : TodayWeatherInfo? = null
-    private var hourlyWeatherInfo : List<HourlyWeatherInfo>? = null
+    private var todayWeatherInfo: TodayWeatherInfo? = null
+    private var hourlyWeatherInfo: List<HourlyWeatherInfo>? = null
 
     //DAOs
     private var todayDAO: TodayDatabaseDAO
@@ -48,6 +38,8 @@ class Repository(context: Context) {
     fun initializeData() {
         uiScope.launch {
             try {
+                //implement error handling
+                //will do after complete implementation of homepage
                 getApiAndPrepareTodayWeatherData()
                 getApiAndPrepareHourlyWeatherData()
                 homeModel.value = HomeModel(todayWeatherInfo, hourlyWeatherInfo)
@@ -67,7 +59,7 @@ class Repository(context: Context) {
 
     private suspend fun getApiAndPrepareHourlyWeatherData() {
         val hourlyWeatherResponse =
-            WeatherApiSingleton.retrofitService.getForecastWeather(cityName, weatherApiKey)
+            WeatherApiSingleton.retrofitService.getForecastWeather(CITY_NAME, WEATHER_API_KEY)
         val hourlyWeather: MutableList<HourlyWeatherInfo>? =
             getHourlyWeatherData(hourlyWeatherResponse)
         hourlyWeatherInfo = hourlyWeather
@@ -92,13 +84,15 @@ class Repository(context: Context) {
     private fun getHourlyWeatherData(hourlyWeatherResponse: Response<ForecastAPI>): MutableList<HourlyWeatherInfo>? {
         val hourlyWeather = hourlyWeatherResponse.body()
         return hourlyWeather?.list?.let { listOfHours ->
-            var hourlyWeatherList = mutableListOf<HourlyWeatherInfo>()
-            var temp: Double = 0.0
-            var time: String
+            val hourlyWeatherList = mutableListOf<HourlyWeatherInfo>()
             for (hour in listOfHours) {
-                temp = hour.main.temp
-                time = hour.dt_txt
-                hourlyWeatherList.add(HourlyWeatherInfo(time = time, temperature = temp))
+                hourlyWeatherList.add(
+                    HourlyWeatherInfo(
+                        time = hour.dt_txt,
+                        temperature = hour.main.temp,
+                        iconID = hour.weather[0].icon
+                    )
+                )
             }
             hourlyWeatherList
         }
@@ -113,7 +107,7 @@ class Repository(context: Context) {
 
     private suspend fun getApiAndPrepareTodayWeatherData() {
         val currentWeatherResponse = WeatherApiSingleton.retrofitService
-            .getCurrentWeather(cityName, weatherApiKey)
+            .getCurrentWeather(CITY_NAME, WEATHER_API_KEY)
         val todaysWeather: TodayWeatherInfo =
             getCurrentWeatherData(currentWeatherResponse)
         todayWeatherInfo = todaysWeather
@@ -123,17 +117,18 @@ class Repository(context: Context) {
     private fun getCurrentWeatherData(currentWeatherResponse: Response<TodayAPI>)
             : TodayWeatherInfo {
         val todaysWeather = currentWeatherResponse.body()
-        val sdf = SimpleDateFormat(datePattern)
+        val sdf = SimpleDateFormat(DATE_PATTERN, Locale.ENGLISH)
         val currentDate = sdf.format(Date())
-        val location = cityName
+        val location = CITY_NAME
 
         return TodayWeatherInfo(
             dayID = 0L,
-            desc = todaysWeather?.weather?.get(0)?.main ?: defaultWeatherDescription,
+            desc = todaysWeather?.weather?.get(0)?.main ?: DEFAULT_WEATHER_DESC,
             temperature = todaysWeather?.main?.temp?.toInt()
-                ?: defaultWeatherTemperature,
+                ?: DEFAULT_WEATHER_TEMPERATURE,
             location = location,
-            todayDate = currentDate
+            todayDate = currentDate,
+            iconID = todaysWeather?.weather?.get(0)?.icon ?: DEFAULT_ICON_ID
         )
     }
 

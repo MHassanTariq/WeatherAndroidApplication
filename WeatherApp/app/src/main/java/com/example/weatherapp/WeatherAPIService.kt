@@ -1,10 +1,7 @@
 package com.example.weatherapp
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlinx.coroutines.Deferred
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -42,9 +39,9 @@ object WeatherApiSingleton {
     }
 }
 
-data class Weather(val main: String)
-data class Main(val temp: Double, val temp_min : Double, val temp_max : Double)
+data class Weather(val main: String, val icon: String)
+data class Main(val temp: Double, val temp_min: Double, val temp_max: Double)
 data class TodayAPI(val main: Main, val weather: List<Weather>)
 
-data class ForecastAPI (val list : List<HourlyData>)
-data class HourlyData (val main : Main, val dt_txt : String)
+data class ForecastAPI(val list: List<HourlyData>)
+data class HourlyData(val main: Main, val dt_txt: String, val weather: List<Weather>)

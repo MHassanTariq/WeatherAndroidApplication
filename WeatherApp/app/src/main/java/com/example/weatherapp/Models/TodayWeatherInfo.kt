@@ -20,5 +20,8 @@ data class TodayWeatherInfo(
     val location : String,
 
     @ColumnInfo(name = "weather_date")
-    val todayDate : String
+    val todayDate : String,
+
+    @ColumnInfo(name = "weather_icon")
+    val iconID : String
 )

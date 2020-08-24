@@ -1,14 +1,12 @@
 package com.example.weatherapp.Fragments
 
-import android.app.Application
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.example.weatherapp.Models.Repository
 import com.example.weatherapp.R
 import com.example.weatherapp.RecyclerViewAdapters.MainAdapter
 import com.example.weatherapp.ViewModels.HomeViewModel
@@ -42,9 +40,9 @@ class HomeFragment : BaseFragment() {
     }
 
     private fun getViewModelInstance(): HomeViewModel? = context?.let { applicationContext ->
-        val viewModelFactory = HomeViewModelFactory(applicationContext)
-        ViewModelProviders.of(this, viewModelFactory)
-            .get(HomeViewModel::class.java)
+        //discuss what the following line does
+        val viewModel: HomeViewModel by viewModels { HomeViewModelFactory(applicationContext) }
+        return viewModel
     }
 
 }
