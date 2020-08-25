@@ -50,7 +50,7 @@ class WeeklyViewHolder private constructor(private val view: View) : RecyclerVie
             holder.view.week_day_icon.loadImage(hour.iconID)
         }
 
-        private fun getDayOfWeek(apiTime: String): String {
+        private fun getDayOfWeek(apiTime: String?): String {
             val stringToDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
             val d: Date = stringToDate.parse(apiTime)
             val dateToString = SimpleDateFormat("EEE", Locale.ENGLISH)

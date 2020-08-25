@@ -24,7 +24,7 @@ enum class HoursIndexes(val index: Int) {
     TWELVE_AM(4)
 }
 
-class MainAdapter(private val homeModel: HomeModel) : RecyclerView.Adapter<MainViewHolder>() {
+class MainAdapter(var homeModel: HomeModel) : RecyclerView.Adapter<MainViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         return MainViewHolder.onCreateViewHolder(parent, viewType)
@@ -50,7 +50,7 @@ class MainViewHolder private constructor(private val view: View) : RecyclerView.
         fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
             when (viewType) {
                 TODAYS_WEATHER_INFO -> return createTodayWeatherInfo(parent)
-                EVERY_3HOUR_WEATHER -> return createHourlyWeather(parent)
+                THREE_HOUR_WEATHER -> return createHourlyWeather(parent)
             }
             return createWeeklyWeather(parent)
         }
@@ -85,7 +85,7 @@ class MainViewHolder private constructor(private val view: View) : RecyclerView.
                 TODAYS_WEATHER_INFO -> homeModel.todayWeatherInfo?.let { currentWeatherInfo ->
                     bindTodayWeatherViews(holder, currentWeatherInfo)
                 }
-                EVERY_3HOUR_WEATHER -> homeModel.hourlyWeatherInfo?.let { listOfHours ->
+                THREE_HOUR_WEATHER -> homeModel.hourlyWeatherInfo?.let { listOfHours ->
                     bindTodaysHourlyWeatherViews(holder, listOfHours)
                 }
                 else -> homeModel.hourlyWeatherInfo?.let { listOfHours ->
@@ -135,10 +135,9 @@ class MainViewHolder private constructor(private val view: View) : RecyclerView.
     }
 }
 
-fun ImageView.loadImage(iconID: String) {
-    val baseUrlPrefix = "https://openweathermap.org/img/wn/"
-    val baseUrlSuffix = "@2x.png"
-    val url = "$baseUrlPrefix${iconID}$baseUrlSuffix"
+fun ImageView.loadImage(iconID: String?) {
+    val iconId : String = iconID ?: return
+    val url = "$BASE_URL_PREFIX${iconId}$BASE_URL_SUFFIX"
     Glide.with(this.context).load(url).apply(
         RequestOptions()
             .placeholder(R.drawable.very_sunny)
