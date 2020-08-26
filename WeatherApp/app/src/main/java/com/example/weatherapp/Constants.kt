@@ -6,7 +6,7 @@ const val CITY_NAME = "Lahore"
 const val DATE_PATTERN = "EEE dd-MM-yy"
 
 //Main Adapter Constants
-const val TODAYS_WEATHER_INFO = 0
+const val TODAY_WEATHER_INFO = 0
 const val THREE_HOUR_WEATHER = 1
 const val MAIN_ADAPTER_COUNT = 3
 const val BASE_URL_PREFIX = "https://openweathermap.org/img/wn/"

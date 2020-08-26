@@ -8,20 +8,20 @@ import androidx.room.PrimaryKey
 data class TodayWeatherInfo(
 
     @PrimaryKey(autoGenerate = true)
-    val dayID : Long = 0L,
+    val dayID: Long = 0L,
 
     @ColumnInfo(name = "weather_description")
-    val desc : String?,
+    val desc: String?,
 
     @ColumnInfo(name = "weather_temperature")
-    val temperature : Int?,
+    val temperature: Int?,
 
     @ColumnInfo(name = "weather_location")
-    var location : String?,
+    var location: String?,
 
     @ColumnInfo(name = "weather_date")
-    val todayDate : String?,
+    val todayDate: String?,
 
     @ColumnInfo(name = "weather_icon")
-    val iconID : String?
+    val iconID: String?
 )

@@ -56,8 +56,5 @@ class WeeklyViewHolder private constructor(private val view: View) : RecyclerVie
             val dateToString = SimpleDateFormat("EEE", Locale.ENGLISH)
             return dateToString.format(d)
         }
-
-
     }
-
 }

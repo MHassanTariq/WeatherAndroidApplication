@@ -1,11 +1,12 @@
 package com.example.weatherapp.viewmodels
 
 import android.content.Context
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.CITY_NAME
+import com.example.weatherapp.Models.HomeModel
 import com.example.weatherapp.Models.Repository
 
 class HomeViewModel(
@@ -13,26 +14,26 @@ class HomeViewModel(
 ) : BaseViewModel() {
 
     private val dataSource: Repository = Repository(context)
-    val todayWeatherInfo =
+    val todayWeatherInfo: LiveData<HomeModel> =
         Transformations.map(dataSource._homeModel) { todayWeatherLiveData ->
             firstTimeDataSuccess = true
             todayWeatherLiveData
         }
-    val internetNotFound = Transformations.map(dataSource._internetNotConnected) { isInternet ->
-        isInternet
-    }
-    val locationNotFound = Transformations.map(dataSource._locationNotFound) { isLocation ->
-        isLocation
-    }
-    var firstTimeDataSuccess : Boolean = false
-
-
+    val internetNotFound: LiveData<Boolean> =
+        Transformations.map(dataSource._internetNotConnected) { isInternet ->
+            isInternet
+        }
+    val locationNotFound: LiveData<Boolean> =
+        Transformations.map(dataSource._locationNotFound) { isLocation ->
+            isLocation
+        }
+    var firstTimeDataSuccess: Boolean = false
 
     init {
         refreshData(CITY_NAME)
     }
 
-    fun refreshData(cityName : String) {
+    fun refreshData(cityName: String) {
         dataSource.initializeData(cityName)
     }
 
@@ -41,8 +42,8 @@ class HomeViewModel(
         dataSource.cancelJob()
     }
 
-    fun locationNotFoundComplete() {
-        dataSource.locationNotFoundComplete()
+    fun afterLocationNotFound() {
+        dataSource.afterLocationNotFound()
     }
 }
 

@@ -14,7 +14,7 @@ interface HourlyDAO {
     fun update(hourlyWeatherInfo: HourlyWeatherInfo)
 
     @Query("SELECT * FROM hourly_weather_info")
-    fun getHourlyData() : MutableList<HourlyWeatherInfo>
+    fun getHourlyData(): MutableList<HourlyWeatherInfo>
 
     @Query("DELETE FROM hourly_weather_info")
     fun clear()

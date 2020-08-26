@@ -43,20 +43,24 @@ class Repository(context: Context) {
         hourlyDAO = dataSource.hourlyDAO
     }
 
-    fun initializeData(cityName : String) {
+    fun initializeData(cityName: String) {
         uiScope.launch {
             try {
                 getApiAndPrepareTodayWeatherData(cityName)
                 getApiAndPrepareHourlyWeatherData(cityName)
-                if (todayWeatherInfo?.desc != null)
-                    homeModel.postValue(HomeModel(todayWeatherInfo, hourlyWeatherInfo))
-                else
-                    locationNotFound.postValue(true)
+                errOrData()
             } catch (e: Exception) {
                 internetNotConnected.postValue(true)
-                //getDBData(e)
+                getDBData(e)
             }
         }
+    }
+
+    private fun errOrData() {
+        if (todayWeatherInfo?.desc != null)
+            homeModel.postValue(HomeModel(todayWeatherInfo, hourlyWeatherInfo))
+        else
+            locationNotFound.postValue(true)
     }
 
     private suspend fun getHourlyDataFromDB(): MutableList<HourlyWeatherInfo> {
@@ -72,8 +76,9 @@ class Repository(context: Context) {
             WeatherApiSingleton.retrofitService.getForecastWeather(cityName, WEATHER_API_KEY)
         hourlyWeatherInfo =
             getHourlyWeatherData(hourlyWeatherResponse)
+        val hourlyInfo: List<HourlyWeatherInfo> = hourlyWeatherInfo ?: return
         clearHourlyDB()
-        addHourlyWeather(hourlyWeatherInfo as MutableList<HourlyWeatherInfo>?)
+        addHourlyWeather(hourlyInfo as MutableList<HourlyWeatherInfo>?)
     }
 
     private suspend fun clearHourlyDB() {
@@ -115,19 +120,19 @@ class Repository(context: Context) {
         homeModel.postValue(HomeModel(todayWeatherInfo, hourlyWeatherInfo))
     }
 
-    fun locationNotFoundComplete(){
+    fun afterLocationNotFound() {
         locationNotFound.postValue(false)
     }
 
-    private suspend fun getApiAndPrepareTodayWeatherData(cityName : String) {
+    private suspend fun getApiAndPrepareTodayWeatherData(cityName: String) {
         val currentWeatherResponse = WeatherApiSingleton.retrofitService
             .getCurrentWeather(cityName, WEATHER_API_KEY)
         val todaysWeather: TodayWeatherInfo =
             getCurrentWeatherData(currentWeatherResponse)
+        if (todaysWeather.desc == null) return
         todaysWeather.location = cityName
         todayWeatherInfo = todaysWeather
         updateData(todaysWeather)
-
     }
 
     private fun getCurrentWeatherData(currentWeatherResponse: Response<TodayAPI>)

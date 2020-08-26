@@ -48,11 +48,11 @@ class MainViewHolder private constructor(private val view: View) : RecyclerView.
     companion object {
 
         fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
-            when (viewType) {
-                TODAYS_WEATHER_INFO -> return createTodayWeatherInfo(parent)
-                THREE_HOUR_WEATHER -> return createHourlyWeather(parent)
+            return when (viewType) {
+                TODAY_WEATHER_INFO -> createTodayWeatherInfo(parent)
+                THREE_HOUR_WEATHER -> createHourlyWeather(parent)
+                else -> createWeeklyWeather(parent)
             }
-            return createWeeklyWeather(parent)
         }
 
         private fun createWeeklyWeather(parent: ViewGroup): MainViewHolder {
@@ -82,7 +82,7 @@ class MainViewHolder private constructor(private val view: View) : RecyclerView.
             homeModel: HomeModel
         ) {
             when (position) {
-                TODAYS_WEATHER_INFO -> homeModel.todayWeatherInfo?.let { currentWeatherInfo ->
+                TODAY_WEATHER_INFO -> homeModel.todayWeatherInfo?.let { currentWeatherInfo ->
                     bindTodayWeatherViews(holder, currentWeatherInfo)
                 }
                 THREE_HOUR_WEATHER -> homeModel.hourlyWeatherInfo?.let { listOfHours ->
@@ -105,6 +105,25 @@ class MainViewHolder private constructor(private val view: View) : RecyclerView.
             holder: MainViewHolder,
             listOfHours: List<HourlyWeatherInfo>
         ) {
+            setHourlyWeatherText(holder, listOfHours)
+            setHourlyWeatherImages(holder, listOfHours)
+        }
+
+        private fun setHourlyWeatherImages(
+            holder: MainViewHolder,
+            listOfHours: List<HourlyWeatherInfo>
+        ) {
+            holder.view.pm12_icon.loadImage(listOfHours[HoursIndexes.TWELVE_PM.index].iconID)
+            holder.view.pm3_icon.loadImage(listOfHours[HoursIndexes.THREE_PM.index].iconID)
+            holder.view.pm6_icon.loadImage(listOfHours[HoursIndexes.SIX_PM.index].iconID)
+            holder.view.pm9_icon.loadImage(listOfHours[HoursIndexes.NINE_PM.index].iconID)
+            holder.view.am12_icon.loadImage(listOfHours[HoursIndexes.TWELVE_AM.index].iconID)
+        }
+
+        private fun setHourlyWeatherText(
+            holder: MainViewHolder,
+            listOfHours: List<HourlyWeatherInfo>
+        ) {
             holder.view.pm12_temp.text =
                 listOfHours[HoursIndexes.TWELVE_PM.index].temperature.toString()
             holder.view.pm3_temp.text =
@@ -115,11 +134,6 @@ class MainViewHolder private constructor(private val view: View) : RecyclerView.
                 listOfHours[HoursIndexes.NINE_PM.index].temperature.toString()
             holder.view.am12_temp.text =
                 listOfHours[HoursIndexes.TWELVE_AM.index].temperature.toString()
-            holder.view.pm12_icon.loadImage(listOfHours[HoursIndexes.TWELVE_PM.index].iconID)
-            holder.view.pm3_icon.loadImage(listOfHours[HoursIndexes.THREE_PM.index].iconID)
-            holder.view.pm6_icon.loadImage(listOfHours[HoursIndexes.SIX_PM.index].iconID)
-            holder.view.pm9_icon.loadImage(listOfHours[HoursIndexes.NINE_PM.index].iconID)
-            holder.view.am12_icon.loadImage(listOfHours[HoursIndexes.TWELVE_AM.index].iconID)
         }
 
         private fun bindTodayWeatherViews(
@@ -136,7 +150,7 @@ class MainViewHolder private constructor(private val view: View) : RecyclerView.
 }
 
 fun ImageView.loadImage(iconID: String?) {
-    val iconId : String = iconID ?: return
+    val iconId: String = iconID ?: return
     val url = "$BASE_URL_PREFIX${iconId}$BASE_URL_SUFFIX"
     Glide.with(this.context).load(url).apply(
         RequestOptions()

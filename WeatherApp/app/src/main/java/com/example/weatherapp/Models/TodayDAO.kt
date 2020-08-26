@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
-interface TodayDatabaseDAO{
+interface TodayDatabaseDAO {
     @Insert
     fun insert(todayWeatherInfo: TodayWeatherInfo)
 
@@ -12,13 +12,13 @@ interface TodayDatabaseDAO{
     fun update(todayWeatherInfo: TodayWeatherInfo)
 
     @Query("SELECT * FROM today_weather_info ORDER BY dayID DESC LIMIT 1")
-    fun getTodayWeatherInfo() : TodayWeatherInfo?
+    fun getTodayWeatherInfo(): TodayWeatherInfo?
 
     @Query("SELECT * FROM today_weather_info WHERE dayID = :key")
-    fun get(key : Long) : LiveData<TodayWeatherInfo>
+    fun get(key: Long): LiveData<TodayWeatherInfo>
 
     @Query("DELETE FROM today_weather_info WHERE dayID = :key")
-    fun delete(key : Long)
+    fun delete(key: Long)
 
     @Query("DELETE FROM today_weather_info")
     fun deleteAll()
