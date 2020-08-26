@@ -1,6 +1,5 @@
 package com.example.weatherapp.Activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.weatherapp.R
 

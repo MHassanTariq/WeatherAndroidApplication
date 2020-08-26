@@ -3,7 +3,10 @@ package com.example.weatherapp.RecyclerViewAdapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.weatherapp.Models.HomeModel
 import com.example.weatherapp.Models.HourlyWeatherInfo
 import com.example.weatherapp.Models.TodayWeatherInfo
@@ -11,12 +14,17 @@ import com.example.weatherapp.R
 import kotlinx.android.synthetic.main.every_3hour_weather.view.*
 import kotlinx.android.synthetic.main.todays_weather_info.view.*
 import kotlinx.android.synthetic.main.weekly_layout_for_recycler_view.view.*
+import com.example.weatherapp.*
 
-private const val TODAYS_WEATHER_INFO = 0
-private const val EVERY_3HOUR_WEATHER = 1
-private const val MAIN_ADAPTER_COUNT = 3
+enum class HoursIndexes(val index: Int) {
+    TWELVE_PM(0),
+    THREE_PM(1),
+    SIX_PM(2),
+    NINE_PM(3),
+    TWELVE_AM(4)
+}
 
-class MainAdapter(private val homeModel: HomeModel) : RecyclerView.Adapter<MainViewHolder>() {
+class MainAdapter(var homeModel: HomeModel) : RecyclerView.Adapter<MainViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         return MainViewHolder.onCreateViewHolder(parent, viewType)
@@ -35,17 +43,16 @@ class MainAdapter(private val homeModel: HomeModel) : RecyclerView.Adapter<MainV
     }
 }
 
-class MainViewHolder private constructor(view: View) : RecyclerView.ViewHolder(view) {
-    private val myView = view
+class MainViewHolder private constructor(private val view: View) : RecyclerView.ViewHolder(view) {
 
     companion object {
 
         fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
-            when (viewType) {
-                TODAYS_WEATHER_INFO -> return createTodayWeatherInfo(parent)
-                EVERY_3HOUR_WEATHER -> return createHourlyWeather(parent)
+            return when (viewType) {
+                TODAY_WEATHER_INFO -> createTodayWeatherInfo(parent)
+                THREE_HOUR_WEATHER -> createHourlyWeather(parent)
+                else -> createWeeklyWeather(parent)
             }
-            return createWeeklyWeather(parent)
         }
 
         private fun createWeeklyWeather(parent: ViewGroup): MainViewHolder {
@@ -75,10 +82,10 @@ class MainViewHolder private constructor(view: View) : RecyclerView.ViewHolder(v
             homeModel: HomeModel
         ) {
             when (position) {
-                TODAYS_WEATHER_INFO -> homeModel.todayWeatherInfo?.let { currentWeatherInfo ->
+                TODAY_WEATHER_INFO -> homeModel.todayWeatherInfo?.let { currentWeatherInfo ->
                     bindTodayWeatherViews(holder, currentWeatherInfo)
                 }
-                EVERY_3HOUR_WEATHER -> homeModel.hourlyWeatherInfo?.let { listOfHours ->
+                THREE_HOUR_WEATHER -> homeModel.hourlyWeatherInfo?.let { listOfHours ->
                     bindTodaysHourlyWeatherViews(holder, listOfHours)
                 }
                 else -> homeModel.hourlyWeatherInfo?.let { listOfHours ->
@@ -91,29 +98,64 @@ class MainViewHolder private constructor(view: View) : RecyclerView.ViewHolder(v
             holder: MainViewHolder,
             listOfHours: List<HourlyWeatherInfo>
         ) {
-            holder.myView.weekly_recycler_view.adapter = WeeklyAdapter(listOfHours)
+            holder.view.weekly_recycler_view.adapter = WeeklyAdapter(listOfHours)
         }
 
         private fun bindTodaysHourlyWeatherViews(
             holder: MainViewHolder,
             listOfHours: List<HourlyWeatherInfo>
         ) {
-            holder.myView.pm12_temp.text = listOfHours.get(0).temperature.toString()
-            holder.myView.pm3_temp.text = listOfHours.get(1).temperature.toString()
-            holder.myView.pm6_temp.text = listOfHours.get(2).temperature.toString()
-            holder.myView.pm9_temp.text = listOfHours.get(3).temperature.toString()
-            holder.myView.am12_temp.text = listOfHours.get(4).temperature.toString()
+            setHourlyWeatherText(holder, listOfHours)
+            setHourlyWeatherImages(holder, listOfHours)
+        }
+
+        private fun setHourlyWeatherImages(
+            holder: MainViewHolder,
+            listOfHours: List<HourlyWeatherInfo>
+        ) {
+            holder.view.pm12_icon.loadImage(listOfHours[HoursIndexes.TWELVE_PM.index].iconID)
+            holder.view.pm3_icon.loadImage(listOfHours[HoursIndexes.THREE_PM.index].iconID)
+            holder.view.pm6_icon.loadImage(listOfHours[HoursIndexes.SIX_PM.index].iconID)
+            holder.view.pm9_icon.loadImage(listOfHours[HoursIndexes.NINE_PM.index].iconID)
+            holder.view.am12_icon.loadImage(listOfHours[HoursIndexes.TWELVE_AM.index].iconID)
+        }
+
+        private fun setHourlyWeatherText(
+            holder: MainViewHolder,
+            listOfHours: List<HourlyWeatherInfo>
+        ) {
+            holder.view.pm12_temp.text =
+                listOfHours[HoursIndexes.TWELVE_PM.index].temperature.toString()
+            holder.view.pm3_temp.text =
+                listOfHours[HoursIndexes.THREE_PM.index].temperature.toString()
+            holder.view.pm6_temp.text =
+                listOfHours[HoursIndexes.SIX_PM.index].temperature.toString()
+            holder.view.pm9_temp.text =
+                listOfHours[HoursIndexes.NINE_PM.index].temperature.toString()
+            holder.view.am12_temp.text =
+                listOfHours[HoursIndexes.TWELVE_AM.index].temperature.toString()
         }
 
         private fun bindTodayWeatherViews(
             holder: MainViewHolder,
             todayWeatherInfo: TodayWeatherInfo
         ) {
-            holder.myView.today_weather_description_text.text = todayWeatherInfo.desc
-            holder.myView.today_date_text.text = todayWeatherInfo.todayDate
-            holder.myView.today_location_text.text = todayWeatherInfo.location
-            holder.myView.today_temperature_text.text = todayWeatherInfo.temperature.toString()
+            holder.view.today_weather_description_text.text = todayWeatherInfo.desc
+            holder.view.today_date_text.text = todayWeatherInfo.todayDate
+            holder.view.today_location_text.text = todayWeatherInfo.location
+            holder.view.today_temperature_text.text = todayWeatherInfo.temperature.toString()
+            holder.view.today_icon.loadImage(todayWeatherInfo.iconID)
         }
-
     }
+}
+
+fun ImageView.loadImage(iconID: String?) {
+    val iconId: String = iconID ?: return
+    val url = "$BASE_URL_PREFIX${iconId}$BASE_URL_SUFFIX"
+    Glide.with(this.context).load(url).apply(
+        RequestOptions()
+            .placeholder(R.drawable.very_sunny)
+            .error(R.drawable.error_img_loading)
+    )
+        .into(this)
 }
