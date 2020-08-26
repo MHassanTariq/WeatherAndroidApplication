@@ -21,13 +21,13 @@ class Repository(context: Context) {
     val _homeModel: LiveData<HomeModel>
         get() = homeModel
 
-    private var locationNotFound = MutableLiveData<Boolean>()
-    val _locationNotFound: LiveData<Boolean>
-        get() = locationNotFound
+    private var isLocationFound = MutableLiveData<Boolean>()
+    val _isLocationFound: LiveData<Boolean>
+        get() = isLocationFound
 
-    private var internetNotConnected = MutableLiveData<Boolean>()
-    val _internetNotConnected: LiveData<Boolean>
-        get() = internetNotConnected
+    private var isNetworkConnected = MutableLiveData<Boolean>()
+    val _isNetworkConnected: LiveData<Boolean>
+        get() = isNetworkConnected
 
     //Data
     private var todayWeatherInfo: TodayWeatherInfo? = null
@@ -50,17 +50,17 @@ class Repository(context: Context) {
                 getApiAndPrepareHourlyWeatherData(cityName)
                 errOrData()
             } catch (e: Exception) {
-                internetNotConnected.postValue(true)
+                isNetworkConnected.postValue(false)
                 getDBData(e)
             }
         }
     }
 
     private fun errOrData() {
-        if (todayWeatherInfo?.desc != null)
+        if (todayWeatherInfo?.desc != null && hourlyWeatherInfo != null)
             homeModel.postValue(HomeModel(todayWeatherInfo, hourlyWeatherInfo))
         else
-            locationNotFound.postValue(true)
+            isLocationFound.postValue(false)
     }
 
     private suspend fun getHourlyDataFromDB(): MutableList<HourlyWeatherInfo> {
@@ -121,7 +121,7 @@ class Repository(context: Context) {
     }
 
     fun afterLocationNotFound() {
-        locationNotFound.postValue(false)
+        isLocationFound.postValue(true)
     }
 
     private suspend fun getApiAndPrepareTodayWeatherData(cityName: String) {

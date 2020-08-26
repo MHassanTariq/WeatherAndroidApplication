@@ -34,11 +34,11 @@ class HomeFragment : BaseFragment() {
             R.layout.fragment_home, container, false
         )
         viewModel = getViewModelInstance()
-        initSettings()
+        initViews()
         return binding.root
     }
 
-    private fun initSettings() {
+    private fun initViews() {
         searchViewVisibility(View.GONE)
         setObservers()
         setViewListeners()
@@ -63,22 +63,28 @@ class HomeFragment : BaseFragment() {
 
     private fun errorStatesObservers(localViewModel: HomeViewModel) {
         locationErrObs(localViewModel)
-        internetErrObs(localViewModel)
+        internetErrObserver(localViewModel)
     }
 
-    private fun internetErrObs(localViewModel: HomeViewModel) {
-        localViewModel.internetNotFound.observe(viewLifecycleOwner, Observer { isNotNet ->
-            if (isNotNet) {
-                Toast.makeText(activity, ERR_NO_INTERNET, Toast.LENGTH_LONG).show()
-                binding.homeNotification.text = ERR_NO_INTERNET
-            }
-        })
+    private fun internetErrObserver(localViewModel: HomeViewModel) {
+        localViewModel.isInternetAvailable.observe(
+            viewLifecycleOwner,
+            Observer { isNetworkConnected ->
+                if (!isNetworkConnected) {
+                    showToast(ERR_NO_INTERNET)
+                    binding.homeNotification.text = ERR_NO_INTERNET
+                }
+            })
+    }
+
+    private fun showToast(msg: String) {
+        Toast.makeText(activity, msg, Toast.LENGTH_LONG).show()
     }
 
     private fun locationErrObs(localViewModel: HomeViewModel) {
-        localViewModel.locationNotFound.observe(viewLifecycleOwner, Observer { isLocationNot ->
-            if (isLocationNot) {
-                Toast.makeText(activity, ERR_LOC_NOT_FOUND, Toast.LENGTH_LONG).show()
+        localViewModel.isLocationFound.observe(viewLifecycleOwner, Observer { isLocationAvailable ->
+            if (!isLocationAvailable) {
+                showToast(ERR_LOC_NOT_FOUND)
                 binding.homeNotification.text = ERR_LOC_NOT_FOUND
                 binding.homeNotification.setTextColor(Color.RED)
                 viewModel?.afterLocationNotFound()

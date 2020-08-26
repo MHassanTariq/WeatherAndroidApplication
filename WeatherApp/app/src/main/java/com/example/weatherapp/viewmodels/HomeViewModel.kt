@@ -19,12 +19,12 @@ class HomeViewModel(
             firstTimeDataSuccess = true
             todayWeatherLiveData
         }
-    val internetNotFound: LiveData<Boolean> =
-        Transformations.map(dataSource._internetNotConnected) { isInternet ->
+    val isInternetAvailable: LiveData<Boolean> =
+        Transformations.map(dataSource._isNetworkConnected) { isInternet ->
             isInternet
         }
-    val locationNotFound: LiveData<Boolean> =
-        Transformations.map(dataSource._locationNotFound) { isLocation ->
+    val isLocationFound: LiveData<Boolean> =
+        Transformations.map(dataSource._isLocationFound) { isLocation ->
             isLocation
         }
     var firstTimeDataSuccess: Boolean = false
