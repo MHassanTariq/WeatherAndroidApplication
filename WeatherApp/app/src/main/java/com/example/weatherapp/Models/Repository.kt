@@ -48,7 +48,7 @@ class Repository(context: Context) {
             try {
                 getApiAndPrepareTodayWeatherData(cityName)
                 getApiAndPrepareHourlyWeatherData(cityName)
-                errOrData()
+                errorOrData()
             } catch (e: Exception) {
                 isNetworkConnected.postValue(false)
                 getDBData(e)
@@ -56,8 +56,8 @@ class Repository(context: Context) {
         }
     }
 
-    private fun errOrData() {
-        if (todayWeatherInfo?.desc != null && hourlyWeatherInfo != null)
+    private fun errorOrData() {
+        if (!todayWeatherInfo?.desc.isNullOrBlank() && hourlyWeatherInfo != null)
             homeModel.postValue(HomeModel(todayWeatherInfo, hourlyWeatherInfo))
         else
             isLocationFound.postValue(false)
@@ -74,8 +74,7 @@ class Repository(context: Context) {
     private suspend fun getApiAndPrepareHourlyWeatherData(cityName: String) {
         val hourlyWeatherResponse =
             WeatherApiSingleton.retrofitService.getForecastWeather(cityName, WEATHER_API_KEY)
-        hourlyWeatherInfo =
-            getHourlyWeatherData(hourlyWeatherResponse)
+        hourlyWeatherInfo = getHourlyWeatherData(hourlyWeatherResponse)
         val hourlyInfo: List<HourlyWeatherInfo> = hourlyWeatherInfo ?: return
         clearHourlyDB()
         addHourlyWeather(hourlyInfo as MutableList<HourlyWeatherInfo>?)
@@ -97,19 +96,13 @@ class Repository(context: Context) {
 
     private fun getHourlyWeatherData(hourlyWeatherResponse: Response<ForecastAPI>)
             : List<HourlyWeatherInfo>? {
-        val hourlyWeather = hourlyWeatherResponse.body()
-        return hourlyWeather?.list?.let { listOfHours ->
-            val hourlyWeatherList = mutableListOf<HourlyWeatherInfo>()
-            for (hour in listOfHours) {
-                hourlyWeatherList.add(
-                    HourlyWeatherInfo(
-                        time = hour.dt_txt,
-                        temperature = hour.main.temp,
-                        iconID = hour.weather[0].icon
-                    )
-                )
-            }
-            hourlyWeatherList
+        val hourlyWeather = hourlyWeatherResponse.body()?.list ?: return null
+        return hourlyWeather.map { hour ->
+            HourlyWeatherInfo(
+                time = hour.dt_txt,
+                temperature = hour.main.temp,
+                iconID = hour.weather[0].icon
+            )
         }
     }
 
@@ -129,7 +122,7 @@ class Repository(context: Context) {
             .getCurrentWeather(cityName, WEATHER_API_KEY)
         val todaysWeather: TodayWeatherInfo =
             getCurrentWeatherData(currentWeatherResponse)
-        if (todaysWeather.desc == null) return
+        if (todaysWeather.desc.isNullOrBlank()) return
         todaysWeather.location = cityName
         todayWeatherInfo = todaysWeather
         updateData(todaysWeather)
